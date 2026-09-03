@@ -10,8 +10,7 @@ services:
     ports:
       - 4000:3000
     depends_on:
-      db:
-        condition: service_healthy
+      - db
   db:
     container_name: futile-db
     image: postgres:16-alpine
@@ -21,11 +20,6 @@ services:
       - db-data-dev:/var/lib/postgresql/data
     ports:
       - 4001:5432
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
   # Add more containers below (nginx, postgres, etc.)
 volumes:
   db-data-dev:
