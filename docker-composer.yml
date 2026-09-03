@@ -1,0 +1,31 @@
+services:
+  app:
+    container_name: futile-app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    # Set environment variables based on the .env file
+    env_file:
+      - .env
+    ports:
+      - 4000:3000
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    container_name: futile-db
+    image: postgres:16-alpine
+    env_file:
+      - .env.db
+    volumes:
+      - db-data-dev:/var/lib/postgresql/data
+    ports:
+      - 4001:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  # Add more containers below (nginx, postgres, etc.)
+volumes:
+  db-data-dev:
